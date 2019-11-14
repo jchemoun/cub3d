@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 09:53:01 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/14 10:44:18 by jchemoun         ###   ########.fr       */
+/*   Updated: 2019/11/14 14:14:43 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ void	draw_font(t_img *img, t_win *win, t_entry *entry)
 		i++;
 	}
 }
-
+/*
 void	draw_img(t_win *win, t_line *line, t_cara *cara, t_img *img)
 {
 	int i;
@@ -227,7 +227,7 @@ void	draw_img(t_win *win, t_line *line, t_cara *cara, t_img *img)
 		i++;
 	}
 }
-
+*/
 int		dda_algo(t_line *line)
 {
 	int hit;
@@ -282,40 +282,50 @@ void	line_init(t_line *line, t_cara *cara, t_win *win, int i)
 	}
 }
 
-void	draw_wall(t_cub3d *cub, int i)
+void	draw_tex(t_cub3d *cub, t_img *tex, int i)
 {
-	int texx;
 	int texy;
-	t_img *tex = cub->entry->no_tex;
+	int texx;
 
-	//printf("%i	%i\n", tex->height, tex->width);
 	texx = ((int)(cub->line->wall_hit * (double)tex->width));
 	if (cub->line->side == 1 && cub->line->ray_dirx > 0)
 		texx = tex->width - texx - 1;
 	if (cub->line->side == 0 && cub->line->ray_diry < 0)
 		texx = tex->width - texx - 1;
-	//printf("%i	%i\n", cub->img->byte_px, tex->size_line);
 	while (cub->line->start < cub->line->end)
 	{
 		texy = ((((cub->line->start * 256) - (cub->win->h * 128) + (cub->line->lineh * 128)) * tex->height) / cub->line->lineh) / 256;
 		//printf("%i	%i\n", texx, texy);
-		*(cub->img->img_addr + (i * 4 + 0) + (cub->img->size_line * cub->line->start)) = *(tex->img_addr + (texy * 4 + 0) + (tex->size_line * texx));
-		*(cub->img->img_addr + (i * 4 + 1) + (cub->img->size_line * cub->line->start)) = *(tex->img_addr + (texy * 4 + 1) + (tex->size_line * texx));
-		*(cub->img->img_addr + (i * 4 + 2) + (cub->img->size_line * cub->line->start)) = *(tex->img_addr + (texy * 4 + 2) + (tex->size_line * texx));
-		*(cub->img->img_addr + (i * 4 + 3) + (cub->img->size_line * cub->line->start)) = *(tex->img_addr + (texy * 4 + 3) + (tex->size_line * texx));
+		*(cub->img->img_addr + (i * 4 + 0) + (cub->img->size_line * cub->line->start)) = *(tex->img_addr + (texx * 4 + 0) + (tex->size_line * texy));
+		*(cub->img->img_addr + (i * 4 + 1) + (cub->img->size_line * cub->line->start)) = *(tex->img_addr + (texx * 4 + 1) + (tex->size_line * texy));
+		*(cub->img->img_addr + (i * 4 + 2) + (cub->img->size_line * cub->line->start)) = *(tex->img_addr + (texx * 4 + 2) + (tex->size_line * texy));
+		*(cub->img->img_addr + (i * 4 + 3) + (cub->img->size_line * cub->line->start)) = *(tex->img_addr + (texx * 4 + 3) + (tex->size_line * texy));
 		cub->line->start++;
 	}
-	/*
-	(void)entry;
-	while (line->start < line->end)
+}
+
+void	draw_wall(t_cub3d *cub, int i)
+{
+	//printf("%i	%i\n", tex->height, tex->width);
+	if (cub->line->side == 1)
+		cub->line->wall_hit = cub->cara->posy + (double)(cub->line->wall_size * cub->line->ray_diry);
+	else
+		cub->line->wall_hit = (cub->line->wall_size * cub->line->ray_dirx) + cub->cara->posx;
+	cub->line->wall_hit -= floor(cub->line->wall_hit);
+	if (cub->line->side == 1)
 	{
-		//printf("%i	%i\n", i, line->start);
-		*(img->img_addr + (i * 4 + 0) + (img->size_line * line->start)) = (unsigned char)0;
-		*(img->img_addr + (i * 4 + 1) + (img->size_line * line->start)) = (unsigned char)0;
-		*(img->img_addr + (i * 4 + 2) + (img->size_line * line->start)) = (unsigned char)255;
-		line->start++;
+		if (cub->line->wall_size * cub->line->ray_dirx > 0)
+			draw_tex(cub, cub->entry->no_tex, i);
+		else
+			draw_tex(cub, cub->entry->so_tex, i);
 	}
-	*/
+	else if (cub->line->side == 0)
+	{
+		if (cub->line->wall_size * cub->line->ray_diry > 0)
+			draw_tex(cub, cub->entry->we_tex, i);
+		else
+			draw_tex(cub, cub->entry->ea_tex, i);
+	}
 }
 
 void	line_wall(t_cub3d *cub)
@@ -342,18 +352,6 @@ void	line_wall(t_cub3d *cub)
 		if ((cub->line->end = (cub->line->lineh / 2) + (cub->win->h / 2))
 			>= cub->win->h)
 			cub->line->end = cub->win->h;
-		//for tex
-		//printf("%f	%f	%f\n", cub->cara->posx, cub->line->wall_size, cub->line->ray_dirx);
-		//printf("%f %f\n", (double)(cub->line->wall_size * cub->line->ray_dirx), cub->cara->posx);
-		//printf("printadd%f\n", (double)(cub->line->wall_size * cub->line->ray_dirx) + cub->cara->posx);
-		if (cub->line->side == 1)
-			cub->line->wall_hit = cub->cara->posy + (double)(cub->line->wall_size * cub->line->ray_diry);
-		else
-			cub->line->wall_hit = (cub->line->wall_size * cub->line->ray_dirx) + cub->cara->posx;
-		//printf("WAllhit%Lf	%f\n", cub->line->wall_hit, (double)floor(cub->line->wall_hit));
-		cub->line->wall_hit -= floor(cub->line->wall_hit);
-		//printf("postfloor%f\n", cub->line->wall_hit);
-		//end for
 		draw_wall(cub, i);
 		i++;
 	}
