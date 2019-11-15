@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 09:53:01 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/14 14:14:43 by jchemoun         ###   ########.fr       */
+/*   Updated: 2019/11/15 10:51:36 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ typedef struct	s_cub3d
 {
 	t_win		*win;
 	t_img		*img;
+	t_img		*img_sprite;
 	t_cara		*cara;
 	t_line		*line;
 	t_entry		*entry;
@@ -253,6 +254,31 @@ int		dda_algo(t_line *line)
 	return (side);
 }
 
+int		dda_algo_sprite(t_line *line)
+{
+	int hit;
+	int side;
+
+	hit = 0;
+	while (!hit)
+	{
+		if (line->side_distx < line->side_disty)
+		{
+			line->side_distx += line->delta_distx;
+			line->mapx += line->stepx;
+			side = 0;
+		}
+		else
+		{
+			line->side_disty += line->delta_disty;
+			line->mapy += line->stepy;
+			side = 1;
+		}
+		hit = map[line->mapx][line->mapy];
+	}
+	return (side);
+}
+
 void	line_init(t_line *line, t_cara *cara, t_win *win, int i)
 {
 	line->camx = (2 * i / (double)win->l) - 1;
@@ -303,10 +329,92 @@ void	draw_tex(t_cub3d *cub, t_img *tex, int i)
 		cub->line->start++;
 	}
 }
+/*
+void	draw_sprite(t_cub3d *cub, int i)
+{
+	int texy;
+	int texx;
+	int sc;
+	int sh;
+	int sw;
+	double tsy;
+	double tsx;
+	int draw_sx;
+	int draw_ex;
+	int draw_sy;
+	int draw_ey;
+	t_img *tex = cub->entry->sprite1;
+
+	tsx = (cub->cara->diry * (cub->line->mapx - cub->cara->posx) - cub->cara->dirx * (cub->line->mapy - cub->cara->posy)) / (cub->cara->planx * cub->cara->diry - cub->cara->dirx * cub->cara->plany);
+	tsy = (-cub->cara->plany * (cub->line->mapx - cub->cara->posx) + cub->cara->planx * (cub->line->mapy - cub->cara->posy) / (cub->cara->planx * cub->cara->diry - cub->cara->dirx * cub->cara->plany));
+	//printf("%f	%f\n", tsx, tsy);
+	sc = (int)((cub->win->l / 2) * (1 + tsx / tsy));
+	sh = (int)abs((int)(cub->win->h / tsy));
+	draw_sy = -sh / 2 + cub->win->h / 2;
+	if (draw_sy < 0)
+		draw_sy = 0;
+	draw_ey = sh / 2 + cub->win->h / 2;
+	if (draw_ey >= cub->win->h)
+		draw_ey = cub->win->h - 1;
+	sw = (int)fabs(cub->win->h / tsy);
+	draw_sx = -sw / 2 + sc;
+	if (draw_sx < 0)
+		draw_sx = 0;
+	draw_ex = sw / 2 + sc;
+	if (draw_ex >= cub->win->l)
+		draw_ex = cub->win->l - 1;
+	printf("%d	%d\n", draw_sx, draw_ex);
+	while (draw_sx < draw_ex)
+	{
+		texx = (int)((256 * (draw_sx - (-sw / 2 + sc)) * sh / sw) / 256);
+		while (draw_sy < draw_ey)
+		{
+			texy = ((draw_sy * 256 - cub->win->h + sh * 128) * sh / sh) / 256;
+			//printf("%d	%d\n", texx, texy);
+			*(cub->img->img_addr + (i * 4 + 0) + (cub->img->size_line * cub->line->start)) = *(tex->img_addr + (texx * 4 + 0) + (tex->size_line * texy));
+			*(cub->img->img_addr + (i * 4 + 1) + (cub->img->size_line * cub->line->start)) = *(tex->img_addr + (texx * 4 + 1) + (tex->size_line * texy));
+			*(cub->img->img_addr + (i * 4 + 2) + (cub->img->size_line * cub->line->start)) = *(tex->img_addr + (texx * 4 + 2) + (tex->size_line * texy));
+			*(cub->img->img_addr + (i * 4 + 3) + (cub->img->size_line * cub->line->start)) = *(tex->img_addr + (texx * 4 + 3) + (tex->size_line * texy));
+			draw_sy++;
+		}
+		draw_sx++;
+	}
+}
+*/
+
+void	draw_sprite(t_cub3d *cub, int i)
+{
+	int texx;
+	int texy;
+	t_img *tex = cub->entry->sprite1;
+
+	if (cub->line->side == 1)
+		cub->line->wall_hit = cub->cara->posy + (double)(cub->line->wall_size * cub->line->ray_diry);
+	else
+		cub->line->wall_hit = (cub->line->wall_size * cub->line->ray_dirx) + cub->cara->posx;
+	cub->line->wall_hit -= floor(cub->line->wall_hit);
+	texx = ((int)(cub->line->wall_hit * (double)tex->width));
+	if (cub->line->side == 1 && cub->line->ray_dirx > 0)
+		texx = tex->width - texx - 1;
+	if (cub->line->side == 0 && cub->line->ray_diry < 0)
+		texx = tex->width - texx - 1;
+	while (cub->line->start < cub->line->end)
+	{
+		texy = ((((cub->line->start * 256) - (cub->win->h * 128) + (cub->line->lineh * 128)) * tex->height) / cub->line->lineh) / 256;
+		//printf("%i	%i\n", texx, texy);
+		if ((unsigned int)*(tex->img_addr + (texx * 4 + 0) + (tex->size_line * texy)) != (unsigned int)152 && (unsigned int)*(tex->img_addr + (texx * 4 + 1) + (tex->size_line * texy)) != (unsigned int)0 && (unsigned int)*(tex->img_addr + (texx * 4 + 2) + (tex->size_line * texy)) != (unsigned int)136)
+		{
+			*(cub->img->img_addr + (i * 4 + 0) + (cub->img->size_line * cub->line->start)) = *(tex->img_addr + (texx * 4 + 0) + (tex->size_line * texy));
+			*(cub->img->img_addr + (i * 4 + 1) + (cub->img->size_line * cub->line->start)) = *(tex->img_addr + (texx * 4 + 1) + (tex->size_line * texy));
+			*(cub->img->img_addr + (i * 4 + 2) + (cub->img->size_line * cub->line->start)) = *(tex->img_addr + (texx * 4 + 2) + (tex->size_line * texy));
+			*(cub->img->img_addr + (i * 4 + 3) + (cub->img->size_line * cub->line->start)) = *(tex->img_addr + (texx * 4 + 3) + (tex->size_line * texy));
+		}
+		cub->line->start++;
+	}
+}
 
 void	draw_wall(t_cub3d *cub, int i)
 {
-	//printf("%i	%i\n", tex->height, tex->width);
 	if (cub->line->side == 1)
 		cub->line->wall_hit = cub->cara->posy + (double)(cub->line->wall_size * cub->line->ray_diry);
 	else
@@ -325,6 +433,36 @@ void	draw_wall(t_cub3d *cub, int i)
 			draw_tex(cub, cub->entry->we_tex, i);
 		else
 			draw_tex(cub, cub->entry->ea_tex, i);
+	}
+}
+
+void	line_sprite(t_cub3d *cub)
+{
+	int hit;
+	int i;
+
+	i = 0;
+	while (i < cub->win->l)
+	{
+		hit = 0;
+		cub->line->mapx = (int)cub->cara->posx;
+		cub->line->mapy = (int)cub->cara->posy;
+		line_init(cub->line, cub->cara, cub->win, i);
+		if ((cub->line->side = dda_algo_sprite(cub->line) == 0))
+			cub->line->wall_size = (cub->line->mapx - cub->cara->posx +
+				(1 - cub->line->stepx) / 2) / cub->line->ray_dirx;
+		else
+			cub->line->wall_size = (cub->line->mapy - cub->cara->posy +
+				(1 - cub->line->stepy) / 2) / cub->line->ray_diry;
+		cub->line->lineh = (int)(cub->win->h / cub->line->wall_size);
+		if ((cub->line->start = -cub->line->lineh / 2 + cub->win->h / 2) < 0)
+			cub->line->start = 0;
+		if ((cub->line->end = (cub->line->lineh / 2) + (cub->win->h / 2))
+			>= cub->win->h)
+			cub->line->end = cub->win->h;
+		//printf("%i\n", map[cub->line->mapx][cub->line->mapy]);
+		map[cub->line->mapx][cub->line->mapy] > 1 ? draw_sprite(cub, i) : 0;
+		i++;
 	}
 }
 
@@ -352,6 +490,7 @@ void	line_wall(t_cub3d *cub)
 		if ((cub->line->end = (cub->line->lineh / 2) + (cub->win->h / 2))
 			>= cub->win->h)
 			cub->line->end = cub->win->h;
+		//printf("%i\n", map[cub->line->mapx][cub->line->mapy]);
 		draw_wall(cub, i);
 		i++;
 	}
@@ -573,6 +712,13 @@ void	rotate_left(t_cara *cara)
 	cara->plany = old_planx * sin(cara->rs) + cara->plany * cos(cara->rs);
 }
 
+void	destroy_img(t_win *win, t_img *img_sprite)
+{
+	mlx_destroy_image(win->mlx, img_sprite->img_ptr);
+	img_sprite->img_addr = 0;
+	img_sprite->img_ptr = 0;
+}
+
 int		loop_hook(t_cub3d *cub)
 {
 	if (cub->win->w == 1)
@@ -588,10 +734,14 @@ int		loop_hook(t_cub3d *cub)
 	if (cub->win->lar == 1)
 		rotate_left(cub->cara);
 	//printf("%d\n", cub->entry->f_r);
+	//img_init(cub->win, cub->img_sprite);
 	draw_font(cub->img, cub->win, cub->entry);
 	line_wall(cub);
+	line_sprite(cub);
 	//draw_img(cub->win, cub->line, cub->cara, cub->img);
 	mlx_put_image_to_window(cub->win->mlx, cub->win->win, cub->img->img_ptr, 0, 0);
+	//mlx_put_image_to_window(cub->win->mlx, cub->win->win, cub->img_sprite->img_ptr, 0, 0);
+	//destroy_img(cub->win, cub->img_sprite);
 	return (1);
 }
 
@@ -601,10 +751,12 @@ int main(int ac, char *av[])
 	t_img *img;
 	t_line *line;
 	t_cara *cara;
+	t_img *img_sprite;
 	t_cub3d	*cub;
 
 	(void)ac;
 	img = malloc(sizeof(t_img));
+	img_sprite = malloc(sizeof(t_img));
 	test = malloc(sizeof(t_win));
 	line = malloc(sizeof(t_line));
 	cara = malloc(sizeof(t_cara));
@@ -613,6 +765,7 @@ int main(int ac, char *av[])
 	cub->img = img;
 	cub->win = test;
 	cub->line = line;
+	cub->img_sprite = img_sprite;
 	test->mlx = mlx_init();
 	test->l = 1920;
 	test->h = 1080;
