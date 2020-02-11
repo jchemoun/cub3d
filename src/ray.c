@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/17 10:04:43 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/27 14:25:36 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/11 15:49:51 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,32 +28,15 @@ void			destroy_img(t_win *win, t_img *img_sprite)
 
 t_cara			*setup_char(t_cub3d *cub, t_game *game)
 {
-	cub->cara->posx = (double)(game->y);
-	cub->cara->posy = (double)(game->x);
+	if ((cub->line_spr = malloc(sizeof(t_line_spr))) == NULL)
+		return (NULL);
+	cub->cara->posx = (float)(game->y + 0.5);
+	cub->cara->posy = (float)(game->x + 0.5);
 	cub->cara->dirx = 0;
 	cub->cara->diry = 0;
 	cub->cara->planx = 0;
 	cub->cara->plany = 0;
-	if ((int)game->face == 'N')
-	{
-		cub->cara->dirx = -1;
-		cub->cara->plany = 0.66;
-	}
-	else if ((int)game->face == 'S')
-	{
-		cub->cara->dirx = 1;
-		cub->cara->plany = -0.66;
-	}
-	else if ((int)game->face == 'E')
-	{
-		cub->cara->diry = 1;
-		cub->cara->planx = 0.66;
-	}
-	else if ((int)game->face == 'W')
-	{
-		cub->cara->diry = -1;
-		cub->cara->planx = -0.66;
-	}
+	setup_char2(cub, game);
 	cub->cara->ms = 0.1;
 	cub->cara->rs = 0.1;
 	return (cub->cara);

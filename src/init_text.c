@@ -6,11 +6,17 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/16 02:56:44 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/27 14:07:13 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/04 12:52:52 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ft_cube3d.h>
+
+void	tex_error(void)
+{
+	ft_printf("Error\nTex error");
+	exit(1);
+}
 
 t_img	*get_img_from_file(t_win *win, char *filename)
 {
@@ -38,11 +44,16 @@ t_entry	*get_tex(t_texture texture, t_win *win)
 	i = 1;
 	if (!(entry = malloc(sizeof(t_entry))))
 		return (0);
-	entry->no_tex = get_img_from_file(win, texture.north_text);
-	entry->so_tex = get_img_from_file(win, texture.south_text);
-	entry->we_tex = get_img_from_file(win, texture.west_text);
-	entry->ea_tex = get_img_from_file(win, texture.east_text);
-	entry->sprite1 = get_img_from_file(win, texture.wall_text);
+	if (!(entry->no_tex = get_img_from_file(win, texture.north_text)))
+		tex_error();
+	if (!(entry->so_tex = get_img_from_file(win, texture.south_text)))
+		tex_error();
+	if (!(entry->we_tex = get_img_from_file(win, texture.west_text)))
+		tex_error();
+	if (!(entry->ea_tex = get_img_from_file(win, texture.east_text)))
+		tex_error();
+	if (!(entry->sprite1 = get_img_from_file(win, texture.wall_text)))
+		tex_error();
 	entry->f_r = texture.floor.red;
 	entry->f_g = texture.floor.green;
 	entry->f_b = texture.floor.blue;

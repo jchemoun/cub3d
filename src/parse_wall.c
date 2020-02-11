@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 03:34:25 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/27 14:25:27 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/04 12:43:17 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static char	*parse_wall_n(int fd, char *side)
 			free_parse(line, (void**)res);
 			return (NULL);
 		}
-	if ((res = ft_split(line, ' ')) == NULL || res[2] != 0 ||
+	if ((res = ft_split(line, ' ')) == NULL || (res[2] != 0) ||
 		ft_strncmp(res[0], side, ft_strlen(res[0])))
 	{
 		free_parse(line, (void**)res);
@@ -34,7 +34,6 @@ static char	*parse_wall_n(int fd, char *side)
 	}
 	free(line);
 	free(res[0]);
-	free(res);
 	return (res[1]);
 }
 

@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/13 16:31:50 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/27 14:14:03 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/04 12:45:28 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,12 @@ static int	check_wall(t_map map)
 	int i;
 
 	i = -1;
-	while (++i < map.width - 1)
-		if (map.map[0][i] != 1 || map.map[map.height - 2][i] != 1)
+	while (++i < map.width)
+		if (map.map[0][i] != 1 || map.map[map.height - 1][i] != 1)
 			return (EXIT_FAILURE);
 	i = -1;
-	while (++i < map.height - 1)
-		if (!(map.map[i][0] == 1 && map.map[i][map.width - 2] == 1))
+	while (++i < map.height)
+		if (!(map.map[i][0] == 1 && map.map[i][map.width - 1] == 1))
 			return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }

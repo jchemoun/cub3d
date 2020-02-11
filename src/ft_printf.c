@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 16:38:38 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/22 10:06:51 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/04 12:45:31 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int		ft_print(int conv[N_FLAG], char typ, va_list pa, int *re)
 	return (-1);
 }
 
-void	ft_tabinit(int tab[N_FLAG], int *re)
+void	ft_tabinit_pf(int tab[N_FLAG], int *re)
 {
 	int	i;
 
@@ -58,7 +58,7 @@ int		ft_convert(const char *fi, int os, va_list pa, int *re)
 {
 	int conv[N_FLAG];
 
-	ft_tabinit(conv, re);
+	ft_tabinit_pf(conv, re);
 	while (fi[conv[0]] == '0' && conv[0] < os)
 		conv[1] = 1 - !!(++conv[0]);
 	while (fi[conv[0]] == '-' && conv[0] < os)

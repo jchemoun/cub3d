@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 02:03:31 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/27 14:25:20 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/04 12:45:42 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,33 +37,30 @@ int		**add_first_line(int **map, char *path)
 	return (map);
 }
 
-int		get_len(char *path)
+int		get_size(char *path, t_game *game)
 {
 	int		fd;
 	int		ret;
-	int		size;
+	int		i;
 	char	*line;
 
-	size = 0;
+	i = 0;
+	line = 0;
+	ret = 1;
+	game->map.width = 1;
+	game->map.height = 0;
 	if ((fd = open(path, O_RDONLY)) < 0)
 		return (EXIT_FAILURE);
-	line = ft_strdup("");
-	if ((get_first_line(fd, &line)) == EXIT_FAILURE)
-		return (EXIT_FAILURE);
-	size++;
-	while (check_first_char(line, "1") == 1)
+	if ((ret = get_next_line(fd, &line, "1")) != 1)
+		return (0);
+	while (line[i])
 	{
-		if (line)
-			free(line);
-		if ((ret = get_next_line_map(fd, &line)) != 1)
-		{
-			free(line);
-			return (EXIT_FAILURE);
-		}
-		size++;
+		if (line[i] == '1')
+			game->map.width++;
+		i++;
 	}
 	close(fd);
-	return (size);
+	return (game->map.width);
 }
 
 int		**map_filler(int **tab, char *line, int size)
@@ -119,7 +116,7 @@ int		parse_map(t_game *game, char *path)
 
 	map = NULL;
 	ret = 1;
-	size = get_len(path);
+	size = get_size(path, game);
 	if ((fd = open(path, O_RDONLY)) < 0)
 		return (EXIT_FAILURE);
 	line = ft_strdup("");
@@ -133,7 +130,7 @@ int		parse_map(t_game *game, char *path)
 		return (EXIT_FAILURE);
 	close(fd);
 	game->map.map = add_first_line(map, path);
-	game->map.height = size;
-	game->map.width = 30;
+	game->map.height = size > 7 ? size - 1 : size;
+	game->map.width--;
 	return (EXIT_SUCCESS);
 }

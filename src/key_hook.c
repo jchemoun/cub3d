@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/16 02:17:31 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/27 14:22:32 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/04 10:08:24 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int		loop_hook(t_cub3d *cub)
 	draw_map(cub->img, cub->win, cub);
 	if (cub->win->win == NULL || cub->win->mlx == NULL ||
 		cub->win->bmp)
-		exit(1);
+		save_bmp(cub);
 	mlx_put_image_to_window(cub->win->mlx, cub->win->win,
 	cub->img->img_ptr, 0, 0);
 	return (1);

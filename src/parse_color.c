@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 04:14:34 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/27 14:14:12 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/04 12:43:36 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ static char	*parse_color_n(int fd, char *side)
 	}
 	free(line);
 	free(res[0]);
-	free(res);
 	return (res[1]);
 }
 

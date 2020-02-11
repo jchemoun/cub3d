@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 13:28:15 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/22 10:06:32 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/01/28 13:39:48 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 # define FLAGSET "-0.*lh\0"
 # define N_CONV 10
 # define N_FLAG 8
-# define ABS(x) x < 0 ? -x : x
 
 int	ft_print_nbr(int conv[N_FLAG], va_list pa);
 int	ft_print_ptr(int conv[N_FLAG], va_list pa);

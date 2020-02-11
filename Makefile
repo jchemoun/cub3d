@@ -3,7 +3,7 @@ NAME				=	cub3D
 NAME_BONUS			=	cub3D
 
 # Compilation
-CC					=	gcc -Wall -Wextra -Werror
+CC					=	gcc -Wall -Wextra -Werror -flto -O2 -march=native
 MLX					=	-I minilibx -lmlx -framework OpenGL -framework AppKit
 
 # Name
@@ -62,14 +62,17 @@ SRC_NAME            =	ft_atoi.c 					\
 						dda.c						\
 						draw_map.c					\
 						draw.c						\
+						draw_sprite.c				\
 						init_text.c					\
 						key_hook.c					\
 						line.c						\
 						move.c						\
 						ray.c						\
+						ray_utils.c					\
 						rotate.c					\
 						destroy.c					\
 						parse_utils.c				\
+						save.c						\
 						main.c						\
 
 SRC_BONUS_NAME		=	ft_lstadd_back_bonus.c 	\

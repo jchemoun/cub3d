@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/16 02:25:38 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/27 14:25:38 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/06 14:38:39 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	rotate_right(t_cara *cara)
 {
-	double	old_dir;
-	double	old_planx;
+	float	old_dir;
+	float	old_planx;
 
 	old_dir = cara->dirx;
 	old_planx = cara->planx;
@@ -27,8 +27,8 @@ void	rotate_right(t_cara *cara)
 
 void	rotate_left(t_cara *cara)
 {
-	double	old_dir;
-	double	old_planx;
+	float	old_dir;
+	float	old_planx;
 
 	old_dir = cara->dirx;
 	old_planx = cara->planx;

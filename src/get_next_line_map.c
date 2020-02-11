@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/06 00:04:20 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/27 14:14:15 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/01/28 16:33:55 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static char	*ft_substrfr(char *s, unsigned int start, size_t len)
 	temp[len] = '\0';
 	while (len--)
 	{
-		temp[i] = s[start];
+		temp[i] = s[(start > ft_strlen(s) ? ft_strlen(s) : start)];
 		i++;
 		start++;
 	}

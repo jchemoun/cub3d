@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 10:50:45 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/22 10:09:01 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/11 15:42:51 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ char			*ft_itoa(int n);
 unsigned int	ft_abs(int x);
 int				ft_min(int a, int b);
 int				ft_max(int a, int b);
+void			ft_swap(int *a, int *b);
 
 void			*ft_memccpy(void *dest, const void *src, int c, size_t n);
 void			*ft_memchr(const void *s, int c, size_t n);

@@ -6,7 +6,7 @@
 /*   By: jchemoun <jchemoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/12 01:48:34 by jchemoun          #+#    #+#             */
-/*   Updated: 2019/11/27 14:25:32 by jchemoun         ###   ########.fr       */
+/*   Updated: 2020/02/04 12:46:32 by jchemoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ int			parse_sprite(t_game *game, int fd)
 		return (free_parse(line, (void**)res));
 	free(line);
 	free(res[0]);
-	free(res);
 	game->texture.wall_text = res[1];
 	return (EXIT_SUCCESS);
 }
